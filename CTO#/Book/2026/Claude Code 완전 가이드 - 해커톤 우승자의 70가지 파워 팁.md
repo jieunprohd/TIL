@@ -315,6 +315,34 @@ claude plugin install dx@ykdojo
 다른 디렉토리의 파일을 Claude에게 알려줄 때 절대 경로를 사용하면 혼란을 방지할 수 있다.
 
 # 5. Git과 Github 워크플로우 완전 정복
+Claude Code는 Git 및 Github와 완벽하게 통하ㅂ된다.
+
+## Git과 Github CLI 프로 활용
+- 자동 커밋 메시지 생성
+- Draft PR 자동 생성
+- PR 템플릿 활용
+
+## Git worktrees로 병렬 브랜치 작업
+여러 브랜치에서 동시 작업해야 할 때 git worktree를 사용하여 브랜치 전환 없이 병렬 작업이 가능하다.
+
+## 대화형 PR 리뷰
+PR을 Claude Code로 개요 파악, 파일별 심층 리뷰, 테스트 커버리지 확인, 개선 제안, 자동 수정 등의 처리할 수 있다.
+
+## 승인된 명령어 감사
+cc-safe를 통해 ./claude/settings.json 파일 중 위험한 승인 명령어를 감지한다.
+
+**설치 방법**
+~~~shell
+# 설치
+npm install -g cc-safe
+
+# 현재 디렉토리 스캔
+npx cc-safe .
+
+# 전체 프로젝트 폴더 스캔
+npx cc-safe ~/projects
+~~~
+
 # 6. 고급 기능 - MCP, Hooks, Agents
 # 7. 시스템 최적화와 자동화
 # 8. 컨테이너와 샌드박스
