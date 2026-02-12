@@ -344,6 +344,74 @@ npx cc-safe ~/projects
 ~~~
 
 # 6. 고급 기능 - MCP, Hooks, Agents
+Claude 코드를 단순 코딩 도우미에서 AI 에이전트 팀으로 만드는 기능을 소개한다.
+
+## MCP (Model Context Protocol)
+MCP는 Claude가 외부 서비스 및 API와 직접 통신할 수 있도록 만드는 프로토콜이다.
+
+**설치 방법**
+~~~shell
+claude mcp add -s user <mcp 이름> <설치 명령어>
+~~~
+
+**Tip**
+MCP는 강력하지만 많아질 수록 컨텍스트 윈도우를 많이 차지한다.
+- 10개 미만의 MCP 서버
+- 80개 미만의 활성 도구
+- 사용하지 않는 MCP는 비활성화
+
+## Hooks
+특정 이벤트 발생 시 자동으로 실행되는 셀 명령어이다.
+
+| Hook | 실행 시점 | 사용 사례 |
+|--------------------------|
+| PreToolUse | 도구 실행 전 | 위험한 명령어 차단 |
+| PostToolUse | 도구 실행 후 | 로그 기록, 알림 전송 |
+| PermissionRequest | 권한 요청 시 | 자동 승인/거부 |
+| Notification | Claude의 알림 시 | 외부 시스템 통합 |
+| SubagentStart | 서브에이전트 시작 시 | 모니터링 |
+| SubagentStop | 서브에이전트 종료 시 | 결과 수집 |
+
+**예시**
+~~~shell
+.claude/settings.json
+
+# 위험한 명령어 차단
+{
+"hooks": {
+    "PreToolUse": {
+        "command": "bash",
+        "args": ["-c", "if echo $TOOL_INPUT | grep -q 'rm -rf /'; then echo 'BLOCKED: Dangerous command'; exit 1; fi"]
+        }
+    }
+}
+~~~
+
+## Skills
+재사용 가능한 지식 조각으로 Claude가 자동으로 호출하거나 사용자가 수동으로 호출할 수 있다.
+
+~/.claude/skills 에 스킬과 관련된 문서를 추가하여 스킬을 추가할 수 있다.
+
+## Agents
+메인 Claude가 작업을 위임할 수 있는 특정 작업에 전문화된 독립적인 AI 프로세스이다.
+
+**특징**
+- 각자 독립적인 200k 컨텍스트 보유
+- 병렬 실행 가능
+- 전문화된 시스템 프롬프트
+- 작업 완료 후 결과를 메인 에이전트에게 반환
+
+## Plugins
+Hooks, Skills, Agents, MCP 서버를 하나의 패키지로 묶어 배포하고 설치하는 방법이다.
+/plugin 명령어를 통해 Marketplace 검색 및 설치가 가능하다.
+
+| 기능 | 로딩 시점 | 주요 사용자 | 토큰 효율성 | 사용 사례 |
+|-----------------------------------------------|
+| CLAUDE.md | 모든 대화 시작 시 | 개발자 | 낮음 (항상 로드) | 프로젝트 설명, 코딩 스타일, 금지 사항 |
+| Skills | 필요 시 자동 | Claude | 높음 (필요 시만) | 특정 작업 자동화 |
+| Slash Commands | 수동 호출 시 | 개발자 | 높음 (호출 시만) | 반복 작업 |
+| Plugins | 설치 시 | 개발자 | - | 여러 기능을 하나로 묶어 배포 |
+
 # 7. 시스템 최적화와 자동화
 # 8. 컨테이너와 샌드박스
 # 9. 브라우저 통합과 웹 자동화
