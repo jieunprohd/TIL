@@ -562,5 +562,69 @@ AI를 진정으로 이해하고 직관을 얻고 싶다면 많은 토큰을 사�
 - 커뮤니티 학습
 - Ado 팔로우
 
-
 # 11. 고급 기능과 SDK
+최신 기능과 개발자를 위한 SDK를 설명한다.
+
+## Extended Thinking
+ultrathink 키워드를 포함하면, 응답 전 최대 32k의 토큰을 내부 추론에 활용해 복잡한 아키텍처 결정이나 까다로운 디버깅에 유리하다.
+
+~~~shell
+.claude/settings.json
+
+{
+  "thinking": {
+    "maxTokens": 5000, # ultrathink 키워드보다 우선할 수 있다.
+  }
+}
+~~~
+
+## LSP (Language Server Protocol) 통합
+Claude에게 IDE 수준의 코드 인텔리전스를 제공한다.
+
+**LSP가 제공하는 것**
+- 각 편집 후 에러와 경고를 즉시 진단
+- 코드 탐색을 통해 정의 이동, 참조 찾기, 호버 정보 제공
+- 언어를 인식해 타입 정보 및 문서 제공
+
+## Claude Agent SDK
+Claude Code의 에이전트 루프, 도구, 컨텍스트 관리를 SDK로 사용할 수 있다.
+
+## 팀 설정과 공유 워크플로우
+팀 저장소에 .claude/ 폴더를 커밋해 모든 팀원이 동일하게 사용할 수 있다.
+~~~shell
+.claude/team-settings.json
+
+{
+  "permissions": {
+    "allow": ["Read(src/)", "Write(src/)", "Bash(npm test)"]
+  },
+  "hooks": {
+    "PreToolUse": {
+      "command": "bash",
+      "args": ["-c", "echo 'Team hook: validating...'"]
+    }
+  },
+  "mcpServers": {
+    "company-db": {
+      "command": "npx",
+      "args": ["@company/db-mcp"]
+    }
+  }
+}
+~~~
+
+# 기타
+**공식 문서 및 가이드**
+1. Claude Code 공식 문서: https://code.claude.com/docs/en/overview - 설치, 기본 사용법, 모든 명령어 레퍼런스
+2. Anthropic Engineering 블로그: https://www.anthropic.com/engineering/claude-code-best-practices - 베스트 프랙티스, 아키텍처 설명, 최신 기능 소개
+3. Claude Code GitHub: https://github.com/anthropics/claude-code - 이슈 트래커, 기능 요청, 커뮤니티 논의
+
+**커뮤니티 자료**
+1. ykdojo의 claude-code-tips: https://github.com/ykdojo/claude-code-tips - 43가지 파워 팁, 커스텀 스크립트, dx 플러그인
+2. Ado의 Advent of Claude 2025: https://adocomplete.com/advent-of-claude-2025/ - 31일간의 팁 시리즈, 초급부터 고급까지
+3. r/ClaudeAI 서브레딧: https://www.reddit.com/r/ClaudeAI/ - 커뮤니티 질문, 워크플로우 공유, 최신 소식
+
+**실전 사례 및 경험담**
+1. Jacob’s Tech Tavern: https://blog.jacobstechtavern.com/p/claude-code-productivity - “Claude Code가 나를 50-100% 더 생산적으로 만들었다”
+2. The Pragmatic Engineer: https://newsletter.pragmaticengineer.com/p/how-claude-code-is-built - Claude Code가 어떻게 만들어졌는지 내부 구조 분석
+3. Lenny’s Newsletter: https://www.lennysnewsletter.com/p/everyone-should-be-using-claude-code - 비개발자도 Claude Code를 사용해야 하는 이유
