@@ -413,6 +413,70 @@ Hooks, Skills, Agents, MCP 서버를 하나의 패키지로 묶어 배포하고 
 | Plugins | 설치 시 | 개발자 | - | 여러 기능을 하나로 묶어 배포 |
 
 # 7. 시스템 최적화와 자동화
+## 시스템 프롬프트 슬림화
+Claude Code의 모든 행동은 시스템 프롬프트에 의해 결정되고, 이를 줄이면 더 많은 코드 파일과 대화 기록을 컨텍스트에 담을 수 있고 응답 속도 향상 및 비용 절감 효과를 볼 수 있다.
+단, 시스템 프롬프트를 잘못 수정하면 성능이 심각하게 저하될 수 있기 때문에 충분한 이해 후 시도해야 한다.
+
+## 장시간 작업을 위한 수동 지수 백오프
+장시간 실행되는 작업이 상태 확인은 지수 백오프 전략을 사용하면 토큰을 절약하고, 다른 작업을 병렬로 처리할 수 있다.
+
+**지수 백오프 전략**
+처음에는 짧은 간격으로 확인하다가 점차 간격을 늘려가는 방식
+
+## 백그라운드에서 bash 명령 및 에이전트 실행
+장시간 실행되는 명령어나 에이전트를 백그라운드로 보내고, 다른 작업을 계속하게 할 수 있다.
+명령어 실행 중 Ctrl + B를 누르면 백그라운드로 이동한다.
+
+## Headless 모드로 CI/CD 통합
+Claude Code는 CI/CD 파이프라인과 통합이 가능하다.
+
+~~~shell
+# 기본 사용
+claude -p "Fix the lint errors"
+
+# 파이프라인 통합
+git diff | claude -p "Explain these changes"
+
+# JSON 출력
+echo "Review this PR" | claude -p --json
+~~~
+
+**다음과 같이 사용할 수 있다.**
+~~~yaml
+name: Claude Code Review
+
+on:
+    pull_request:
+      types: [opened, synchronize]
+      
+jobs:
+    review:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v3
+            - name: Install Claude Code
+              run: curl -fsSL https://claude.ai/install.sh | sh
+            - name: Review PR
+              env:
+                ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+              run: |
+                git diff origin/main...HEAD | \
+                claude -p "Review this PR and identify potential issues" \
+                > review.md
+            - name: Comment on PR
+              uses: actions/github-script@v6
+              with:
+                script: |
+                    const fs = require('fs');
+                    const review = fs.readFileSync('review.md', 'utf8');
+                    github.rest.issues.createComment({
+                        issue_number: context.issue.number,
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        body: review
+                    });
+~~~
+
 # 8. 컨테이너와 샌드박스
 # 9. 브라우저 통합과 웹 자동화
 # 10. 고급 패턴과 철학
