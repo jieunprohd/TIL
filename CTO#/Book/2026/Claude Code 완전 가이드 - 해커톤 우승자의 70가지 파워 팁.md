@@ -78,7 +78,93 @@ Claude Code는 두 가지 작업 방식을 제공하고 상황에 따라 적절�
 ## 미지의 영역에서 더 용감하게
 AI와의 협업은 단순히 생산성 향상을 넘어 개발자의 자신감과 학습 능력까지 확장시키고 있다.
 
-# 2. 기초부터 탄탄하게 -환경 설정과 필수 명령어
+# 2. 기초부터 탄탄하게 - 환경 설정과 필수 명령어
+AI와 최상의 시너지를 낼 수 있는 초기 설정을 알려준다.
+
+## 커스텀 상태 라인으로 모든 것을 한눈에
+터미널 하단에 실시간으로 중요한 정보를 표출하는 기능
+
+**설치 방법**
+~~~shell
+# 1. 저장소 클론
+git clone https://github.com/ykdojo/claude-code-tips.git
+
+# 2. 스크립트 심볼릭 링크 생성
+ln -s $(pwd)/claude-code-tips/scripts/status-line.sh ~/.claude/scripts/status-line.sh
+
+# 3. Claude Code 재시작
+~~~
+
+**~/.claude/settings.json에서 커스터마이징이 가능하다**
+~~~json
+
+{
+    "statusLine": {
+        "format": "{{dir}} {{git}} | {{tokens}} | {{model}}",
+        "updateInterval": 1000
+    }
+}
+~~~
+
+## 필수 슬래시 명령어 마스터
+**생존 필수 명령어**
+| 명령어 | 설명 | 사용 시점 |
+|----------------------|
+| /usage | 현재 토큰 사용량과 리셋 시간을 시각적으로 표시 | 매 세션 시작 시, 대화가 길어질 때 |
+| /clear | 대화 내용을 지우고 새로운 컨텍스트 시작 | 컨텍스트 오염 시, 새 작업 시작 시 |
+| /stats | Github 스타일 활동 그래프, 즐겨찾는 모델, 연속 사용일 등 분석 | 주간 회고 시, 사용 패턴 분석 시 |
+| /context | 컨텍스트 사용 현황 X-Ray | 성능 저하 느낄 때, 최적화 필요 시 |
+
+**생산성 향상 명령어**
+| 명령어 | 설명 | 사용 시점 |
+|----------------------|
+| /chrome | 크롬 브라우저 통합 시작 | 웹 스크래핑, UI 테스트, 디버깅|
+| /mcp | MCP 서버 목록 및 활성화/비활성화 | MCP 관리, 컨텍스트 최적화 |
+| /permissions | 승인된 명령어 목록 및 관리 | 보안 감사, 위험한 명령어 제거 |
+| /export | 내화 내역 마크타운 내보내기 | 문서화, 팀 공유, 학습 자료 |
+
+**! Prefix**
+! 접두사를 붙이면 Claude의 처리 없이 바로 셀 명령을 실행하고 결과를 컨텍스트에 주입한다.
+
+## CLAUDE.md: AI를 위한 프로젝트 설명서
+CLAUDE.md 파일은 AI가 프로젝트의 기술 스택, 코딩 스타일, 주요 라이브러리, 해서는 안 될 일들을 파악하는 프로젝트 설명서이자 행동 지침이다.
+
+/init 명령어를 통해 Claude가 코드베이스를 분석해 초안을 자동으로 생성한다.
+CLAUDE.md를 직접 편집하지 않고 자연어 명렁어를 통해 업데이트를 지시할 수 있다.
+
+**Tip**
+- CLAUDE.md는 최대한 간결하고 명확하게 유지
+- 처음에는 CLAUDE.md 없이 시작하고, 이후 같은 말을 반복하게 되면 추가
+
+## 터미널 별칭으로 빠른 접근
+~/.zshrc 설정을 통해 타이핑을 최소화 할 수 있다.
+
+~~~shell
+# Claude Code 기본 별칭
+alias c='claude'
+alias cc='claude --continue' # 마지막 대화 이어가기
+alias cr='claude --resume' # 대화 목록에서 선택
+alias ch='claude --chrome' # 크롬 통합 모드
+
+# Git 관련 별칭 (Claude와 함께 사용)
+alias gb='git branch'
+alias gco='git checkout'
+alias gst='git status'
+alias gd='git diff'
+
+# 빠른 종료
+alias q='exit'
+~~~
+
+## 세션 관리: 대화를 잃지 않는 법
+Claude Code는 모든 대화를 자동으로 저장하지만, 효과적응로 관리하지 않으면 이후 찾기 어렵다.
+
+**Tip**
+- claude --continue를 통해 마지막으로 작업하던 대화를 이어나갈 수 있다.
+- /rename <이름> 명령어를 통해 세션에 의미있는 이름을 붙일 수 있고, claude --resume <이름>을 통해 세션을 재개할 수 있다.
+- claude --teleport <세션 ID>를 통해 웹 브라우저에서 시작한 대화를 터미널로 가져올 수 있다.
+- /export 명령어를 통해 대화 내역을 마크다운 파일로 내보낼 수 있다.
+
 # 3. 생산성을 극대화하는 핵심 기술
 # 4. 컨텍스트 관리의 예술
 # 5. Git과 Github 워크플로우 완전 정복
